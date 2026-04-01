@@ -1,16 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.pacientesjavafxequipo12.HelloController">
+<VBox spacing="8.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.pacientesjavafxequipo12.HelloController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
     </padding>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+    <Label text="SISTEMA DE PACIENTES - EQUIPO 12" style="-fx-font-weight: bold;" />
+
+    <Label text="CURP:" />
+    <TextField fx:id="txtCurp" />
+
+    <Label text="Nombre Completo:" />
+    <TextField fx:id="txtName" />
+
+    <Label text="Edad:" />
+    <TextField fx:id="txtEdad" />
+
+    <Label text="Teléfono:" />
+    <TextField fx:id="txtTel" />
+
+    <Label text="Alergias:" />
+    <TextField fx:id="txtAlergias" />
+
+    <HBox spacing="10.0">
+        <Button onAction="#onAgregar" text="Guardar Nuevo" />
+        <Button onAction="#onActualizar" text="Editar Seleccionado" />
+        <Button onAction="#onEliminar" text="Dar de Baja" />
+    </HBox>
+
+    <Separator />
+
+    <TableView fx:id="tblPacientes" prefHeight="180.0">
+        <columns>
+            <TableColumn fx:id="colCurp" prefWidth="100.0" text="CURP" />
+            <TableColumn fx:id="colNombre" prefWidth="150.0" text="Nombre" />
+            <TableColumn fx:id="colEdad" prefWidth="50.0" text="Edad" />
+            <TableColumn fx:id="colEstatus" prefWidth="80.0" text="Estatus" />
+        </columns>
+    </TableView>
+
+    <HBox spacing="20.0">
+        <Label fx:id="lblTotal" text="Total: 0" />
+        <Label fx:id="lblActivos" text="Activos: 0" />
+        <Label fx:id="lblInactivos" text="Inactivos: 0" />
+    </HBox>
+
+    <Label fx:id="lblMsg" text="Listo" />
 </VBox>
