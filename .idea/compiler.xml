@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="pacientes-javafx-equipo12" />
+        <module name="pacientes-javafx-equipo12 (1)" />
       </profile>
     </annotationProcessing>
   </component>
