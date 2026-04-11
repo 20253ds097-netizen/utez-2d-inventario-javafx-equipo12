@@ -8,7 +8,6 @@ import java.util.List;
 
 public class PacienteRepository {
  private final String FILE_PATH = "data/pacientes.csv";
-
     public PacienteRepository() {
          try {
             Files.createDirectories(Paths.get("data"));
