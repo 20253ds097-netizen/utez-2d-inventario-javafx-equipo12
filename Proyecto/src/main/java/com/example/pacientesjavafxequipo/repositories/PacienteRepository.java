@@ -1,4 +1,4 @@
-package com.example.pacientesjavafxequipo12.repositories;
+package com.example.pacientesjavafxequipo.repositories;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

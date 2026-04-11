@@ -1,4 +1,4 @@
-package com.example.pacientesjavafxequipo12;
+package com.example.pacientesjavafxequipo;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,10 +10,8 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-  
-     FXMLLoader loader = new FXMLLoader(getClass().getResource(
-             "/com/example/pacientesjavafxequipo12/Main-view.fxml"));
-        Scene scene = new Scene(loader.load());
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/pacientesjavafxequipo.views/Main-view.fxml"));
+     Scene scene = new Scene(loader.load());
         stage.setTitle("Gestión de Pacientes");
         stage.setScene(scene);
         stage.show();

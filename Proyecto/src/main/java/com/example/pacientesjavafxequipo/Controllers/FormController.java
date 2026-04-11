@@ -1,7 +1,7 @@
-package com.example.pacientesjavafxequipo12.Controllers;
+package com.example.pacientesjavafxequipo.Controllers;
 
-import com.example.pacientesjavafxequipo12.models.Paciente;
-import com.example.pacientesjavafxequipo12.service.PacienteService;
+import com.example.pacientesjavafxequipo.models.Paciente;
+import com.example.pacientesjavafxequipo.service.PacienteService;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;

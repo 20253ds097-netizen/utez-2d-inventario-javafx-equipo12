@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.pacientesjavafxequipo12.Controllers.FormController"
+      fx:controller="com.example.pacientesjavafxequipo.Controllers.FormController"
       spacing="10"
       style="-fx-padding: 20; -fx-min-width: 340;">
 

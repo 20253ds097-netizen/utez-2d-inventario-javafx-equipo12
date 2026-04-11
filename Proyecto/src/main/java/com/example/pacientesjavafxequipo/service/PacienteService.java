@@ -1,6 +1,6 @@
-package com.example.pacientesjavafxequipo12.service;
-import com.example.pacientesjavafxequipo12.models.Paciente;
-import com.example.pacientesjavafxequipo12.repositories.PacienteRepository;
+package com.example.pacientesjavafxequipo.service;
+import com.example.pacientesjavafxequipo.models.Paciente;
+import com.example.pacientesjavafxequipo.repositories.PacienteRepository;
 import java.io.IOException;
 import java.util.*;
 

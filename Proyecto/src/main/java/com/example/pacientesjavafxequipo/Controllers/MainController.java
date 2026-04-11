@@ -1,7 +1,7 @@
-package com.example.pacientesjavafxequipo12.Controllers;
+package com.example.pacientesjavafxequipo.Controllers;
 
-import com.example.pacientesjavafxequipo12.models.Paciente;
-import com.example.pacientesjavafxequipo12.service.PacienteService;
+import com.example.pacientesjavafxequipo.models.Paciente;
+import com.example.pacientesjavafxequipo.service.PacienteService;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -77,7 +77,7 @@ public class MainController {
     public void abrirFormulario() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pacientesjavafxequipo12/Form-view.fxml"));
+                    "/com/example/pacientesjavafxequipo.views/Form-view.fxml"));
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Nuevo Paciente");
