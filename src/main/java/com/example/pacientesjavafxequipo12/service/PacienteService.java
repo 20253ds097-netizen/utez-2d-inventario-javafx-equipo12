@@ -1,5 +1,4 @@
-package com.example.pacientesjavafxequipo12.services;
-
+package com.example.pacientesjavafxequipo12.service;
 import com.example.pacientesjavafxequipo12.models.Paciente;
 import com.example.pacientesjavafxequipo12.repositories.PacienteRepository;
 import java.io.IOException;
@@ -26,7 +25,6 @@ public class PacienteService {
             throw new IllegalArgumentException("Edad fuera de rango");
         if (!p.getTelefono().matches("\\d{10}"))
             throw new IllegalArgumentException("Teléfono debe ser de 10 dígitos");
-
         if (esNuevo) {
             for (Paciente a : actuales) {
                 if (a.getCurp().equalsIgnoreCase(p.getCurp()))
@@ -39,5 +37,39 @@ public class PacienteService {
         List<String> lineas = new ArrayList<>();
         for (Paciente p : lista) lineas.add(p.toString());
         repo.guardarTodo(lineas);
+    }
+
+
+    public void agregarPaciente(Paciente nuevo) throws IOException {
+        List<Paciente> actuales = obtenerPacientes();
+        validar(nuevo, actuales, true);
+        actuales.add(nuevo);
+        guardarCambios(actuales);
+    }
+
+    public void cambiarEstatus(String curp) throws IOException {
+        List<Paciente> lista = obtenerPacientes();
+        for (Paciente p : lista) {
+            if (p.getCurp().equalsIgnoreCase(curp)) {
+                String nuevoEstatus = p.getEstatus().equalsIgnoreCase("activo") ? "inactivo" : "activo";
+                p.setEstatus(nuevoEstatus);
+                break;
+            }
+        }
+        guardarCambios(lista);
+    }
+
+    public long totalActivos() throws IOException {
+        int count = 0;
+        for (Paciente p : obtenerPacientes())
+            if (p.getEstatus().equalsIgnoreCase("activo")) count++;
+        return count;
+    }
+
+    public long totalInactivos() throws IOException {
+        int count = 0;
+        for (Paciente p : obtenerPacientes())
+            if (p.getEstatus().equalsIgnoreCase("inactivo")) count++;
+        return count;
     }
 }

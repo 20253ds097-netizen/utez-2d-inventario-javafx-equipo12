@@ -5,14 +5,20 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.List;
 
+
 public class PacienteRepository {
+
     private final Path filePath = Paths.get("data", "pacientes.csv");
 
     public PacienteRepository() {
         try {
-            if (Files.notExists(filePath.getParent())) Files.createDirectories(filePath.getParent());
-            if (Files.notExists(filePath)) Files.createFile(filePath);
-        } catch (IOException e) { e.printStackTrace(); }
+            if (Files.notExists(filePath.getParent())) 
+                Files.createDirectories(filePath.getParent());
+            if (Files.notExists(filePath)) 
+                Files.createFile(filePath);
+        } catch (IOException e) { 
+            e.printStackTrace(); 
+        }
     }
 
     public List<String> leerTodo() throws IOException {
