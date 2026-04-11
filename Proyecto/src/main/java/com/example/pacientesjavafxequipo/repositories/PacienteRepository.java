@@ -7,25 +7,27 @@ import java.util.List;
 
 
 public class PacienteRepository {
-
-    private final Path filePath = Paths.get("data", "pacientes.csv");
+ private final String FILE_PATH = "data/pacientes.csv";
 
     public PacienteRepository() {
-        try {
-            if (Files.notExists(filePath.getParent())) 
-                Files.createDirectories(filePath.getParent());
-            if (Files.notExists(filePath)) 
-                Files.createFile(filePath);
-        } catch (IOException e) { 
-            e.printStackTrace(); 
+         try {
+            Files.createDirectories(Paths.get("data"));
+            Path path = Paths.get(FILE_PATH);
+            if (!Files.exists(path)) {
+                Files.createFile(path);
+            }
+        } catch (IOException e) {
+            System.out.println("Error al crear el archivo de base de datos.");
         }
     }
 
-    public List<String> leerTodo() throws IOException {
-        return Files.readAllLines(filePath, StandardCharsets.UTF_8);
+    public List<String> readAllLines() throws IOException {
+        Path path = Paths.get(FILE_PATH);
+        if (!Files.exists(path)) return List.of();
+        return Files.readAllLines(path);
     }
 
-    public void guardarTodo(List<String> lineas) throws IOException {
-        Files.write(filePath, lineas, StandardCharsets.UTF_8, StandardOpenOption.TRUNCATE_EXISTING);
+    public void saveAllLines(List<String> lines) throws IOException {
+        Files.write(Paths.get(FILE_PATH), lines, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 }

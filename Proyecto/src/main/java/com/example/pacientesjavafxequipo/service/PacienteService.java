@@ -8,7 +8,7 @@ public class PacienteService {
     private PacienteRepository repo = new PacienteRepository();
 
     public List<Paciente> obtenerPacientes() throws IOException {
-        List<String> lineas = repo.leerTodo();
+        List<String> lineas = repo.readAllLines();
         List<Paciente> lista = new ArrayList<>();
         for (String l : lineas) {
             if (l.isBlank()) continue;
@@ -36,7 +36,7 @@ public class PacienteService {
     public void guardarCambios(List<Paciente> lista) throws IOException {
         List<String> lineas = new ArrayList<>();
         for (Paciente p : lista) lineas.add(p.toString());
-        repo.guardarTodo(lineas);
+        repo.saveAllLines(lineas);
     }
 
 

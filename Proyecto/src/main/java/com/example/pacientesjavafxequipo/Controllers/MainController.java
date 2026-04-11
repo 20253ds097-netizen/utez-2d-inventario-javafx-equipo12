@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Modality;
@@ -78,15 +79,16 @@ public class MainController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/com/example/pacientesjavafxequipo.views/Form-view.fxml"));
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle("Nuevo Paciente");
-            stage.setScene(new Scene(loader.load()));
+            Parent root = loader.load();
 
             FormController fc = loader.getController();
-           // fc.setMainController(this);
+            fc.setMainController(this);
 
+            Stage stage = new Stage();
+            stage.setTitle("Nuevo Paciente");
+            stage.setScene(new Scene(root));
             stage.showAndWait();
+
         } catch (IOException e) {
             mostrarError("Error al abrir formulario: " + e.getMessage());
         }
