@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ProyectoIntegrador_2D_DSM.iml" filepath="$PROJECT_DIR$/.idea/ProyectoIntegrador_2D_DSM.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Integradora/pacientes-javafx-equipo12.iml" filepath="$PROJECT_DIR$/Integradora/pacientes-javafx-equipo12.iml" />
     </modules>
   </component>
 </project>
