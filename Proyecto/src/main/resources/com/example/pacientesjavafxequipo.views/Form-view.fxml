@@ -58,10 +58,10 @@
             <padding><Insets top="5.0"/></padding>
             <children>
                 <Button fx:id="btn_cancelar"
-                        onAction="#Oncancelar"
+                        onAction="#onCancelar"
                         text="Cancelar"/>
                 <Button fx:id="btn_guardar"
-                        onAction="#Onguardar"
+                        onAction="#onGuardar"
                         text="Guardar"
                         defaultButton="true"/>
             </children>

@@ -175,7 +175,7 @@ public class MainController {
         lbl_error.setText("");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pacientesjavafxequipo12/views/form-view.fxml"));
+                    "/com/example/pacientesjavafxequipo.views/Form-view.fxml"));
             Parent root = loader.load();
 
             FormController controller = loader.getController();
