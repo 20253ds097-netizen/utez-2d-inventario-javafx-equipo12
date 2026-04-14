@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<<<<<<< HEAD
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -68,4 +69,40 @@
         </HBox>
 
     </children>
+=======
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.pacientesjavafxequipo.Controllers.FormController"
+      spacing="10"
+      style="-fx-padding: 20; -fx-min-width: 340;">
+
+    <Label text="Nuevo paciente"
+           style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+
+    <Label text="CURP"/>
+    <TextField fx:id="txtCurp" promptText="18 caracteres"/>
+
+    <Label text="Nombre completo"/>
+    <TextField fx:id="txtNombre" promptText="Mínimo 5 caracteres"/>
+
+    <Label text="Edad"/>
+    <TextField fx:id="txtEdad" promptText="0 - 120"/>
+
+    <Label text="Teléfono"/>
+    <TextField fx:id="txtTelefono" promptText="10 dígitos"/>
+
+    <Label text="Alergias"/>
+    <TextField fx:id="txtAlergias" promptText="Ninguna / describa"/>
+
+    <HBox spacing="10">
+        <Button text="Guardar"  onAction="#guardar"/>
+        <Button text="Cancelar" onAction="#cancelar"/>
+    </HBox>
+
+    <Label fx:id="lblError" style="-fx-text-fill: red;" wrapText="true"/>}
+
+
+>>>>>>> 8b94e29956cf7bd02ed052fd242e6c1131adcbd2
 </VBox>
