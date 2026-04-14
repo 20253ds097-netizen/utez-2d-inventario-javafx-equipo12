@@ -1,13 +1,8 @@
-package com.example.pacientesjavafxequipo.repositories;
+package com.example.pacientesjavafxequipo12.repositories;
 
 import java.io.IOException;
-<<<<<<< HEAD
-=======
-import java.nio.charset.StandardCharsets;
->>>>>>> dev
 import java.nio.file.*;
 import java.util.List;
-
 
 public class PacienteRepository {
  private final String FILE_PATH = "data/pacientes.csv";

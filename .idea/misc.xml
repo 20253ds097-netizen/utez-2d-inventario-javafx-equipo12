@@ -4,20 +4,12 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-<<<<<<< HEAD
         <option value="$PROJECT_DIR$/integradora/pom.xml" />
-=======
-        <option value="$PROJECT_DIR$/pom.xml" />
->>>>>>> dev
         <option value="$PROJECT_DIR$/Proyecto/pom.xml" />
       </list>
     </option>
   </component>
-<<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_25" default="true" project-jdk-name="openjdk-25" project-jdk-type="JavaSDK">
-=======
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_25" default="true" project-jdk-name="25" project-jdk-type="JavaSDK">
->>>>>>> dev
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

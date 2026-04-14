@@ -1,7 +1,7 @@
-package com.example.pacientesjavafxequipo.Controllers;
+package com.example.pacientesjavafxequipo12.Controllers;
 
-import com.example.pacientesjavafxequipo.models.Paciente;
-import com.example.pacientesjavafxequipo.service.PacienteService;
+import com.example.pacientesjavafxequipo12.models.Paciente;
+import com.example.pacientesjavafxequipo12.service.PacienteService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -200,7 +200,7 @@ public class MainController {
         lbl_error.setText("");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pacientesjavafxequipo/views/Form-view.fxml"));
+                    "/com/example/pacientesjavafxequipo.views/Form-view.fxml"));
             Parent root = loader.load();
 
             FormController controller = loader.getController();

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -8,7 +7,7 @@
 <VBox prefHeight="650.0" prefWidth="900.0" spacing="15.0"
       xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.pacientesjavafxequipo.Controllers.MainController">
+      fx:controller="com.example.pacientesjavafxequipo12.Controllers.MainController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
@@ -109,33 +108,4 @@
         </HBox>
 
     </children>
-=======
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<VBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.pacientesjavafxequipo.Controllers.MainController"
-      spacing="10"
-      style="-fx-padding: 16;">
-
-    <HBox spacing="10">
-        <Button text="Nuevo paciente" onAction="#abrirFormulario"/>
-        <Button text="Cambiar estatus" onAction="#cambiarEstatus"/>
-        <Button text="Refrescar"       onAction="#cargarPacientes"/>
-        <Label fx:id="lblResumen" text="Activos: 0 | Inactivos: 0"
-               style="-fx-padding: 4 0 0 10;"/>
-    </HBox>
-
-    <TableView fx:id="tablaPacientes" VBox.vgrow="ALWAYS">
-        <columns>
-            <TableColumn fx:id="colCurp"     text="CURP"      prefWidth="180"/>
-            <TableColumn fx:id="colNombre"   text="Nombre"    prefWidth="160"/>
-            <TableColumn fx:id="colEdad"     text="Edad"      prefWidth="60"/>
-            <TableColumn fx:id="colTelefono" text="Teléfono"  prefWidth="110"/>
-            <TableColumn fx:id="colAlergias" text="Alergias"  prefWidth="130"/>
-            <TableColumn fx:id="colEstatus"  text="Estatus"   prefWidth="90"/>
-        </columns>
-    </TableView>
-
->>>>>>> 8b94e29956cf7bd02ed052fd242e6c1131adcbd2
 </VBox>

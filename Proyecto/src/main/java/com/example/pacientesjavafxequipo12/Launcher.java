@@ -1,4 +1,4 @@
-package com.example.pacientesjavafxequipo;
+package com.example.pacientesjavafxequipo12;
 
 import javafx.application.Application;
 

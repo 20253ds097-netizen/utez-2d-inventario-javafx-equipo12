@@ -1,13 +1,14 @@
-package com.example.pacientesjavafxequipo.Controllers;
+package com.example.pacientesjavafxequipo12.Controllers;
 
-import com.example.pacientesjavafxequipo.models.Paciente;
-import com.example.pacientesjavafxequipo.service.PacienteService;
+import com.example.pacientesjavafxequipo12.models.Paciente;
+import com.example.pacientesjavafxequipo12.service.PacienteService;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class FormController {
 
@@ -24,9 +25,9 @@ public class FormController {
     @FXML private Button           btn_cancelar;
 
     // ── Estado interno ────────────────────────────────────────────
-    private Paciente               pacienteEditando;
+    private Paciente                 pacienteEditando;
     private ObservableList<Paciente> listaPacientes;
-    private PacienteService        service;
+    private PacienteService          service;
 
     // ─────────────────────────────────────────────────────────────
     @FXML
@@ -50,7 +51,7 @@ public class FormController {
         if (paciente != null) {
             lbl_titulo_form.setText("Editar Paciente");
             txt_curp.setText(paciente.getCurp());
-            txt_curp.setDisable(true);         // CURP no se puede cambiar
+            txt_curp.setDisable(true);   // CURP no se puede cambiar
             txt_nombre.setText(paciente.getNombre());
             txt_edad.setText(String.valueOf(paciente.getEdad()));
             txt_telefono.setText(paciente.getTelefono());
@@ -74,53 +75,35 @@ public class FormController {
         String alergias = txt_alergias.getText().trim();
         String estatus  = cmb_estatus.getValue();
 
-        // 2. Validaciones
-        if (curp.isEmpty() || nombre.isEmpty() || edadTxt.isEmpty()
-                || telefono.isEmpty() || estatus == null) {
-            mostrarError("Todos los campos marcados con * son obligatorios.");
-            return;
-        }
-        if (nombre.length() < 5) {
-            mostrarError("El nombre debe tener al menos 5 caracteres.");
-            return;
-        }
-        if (curp.length() < 18) {
-            mostrarError("La CURP debe tener al menos 18 caracteres.");
-            return;
-        }
-
+        // 2. Parsear edad antes de crear el objeto
         int edad;
         try {
             edad = Integer.parseInt(edadTxt);
-            if (edad < 0 || edad > 120) {
-                mostrarError("La edad debe estar entre 0 y 120.");
-                return;
-            }
         } catch (NumberFormatException e) {
             mostrarError("La edad debe ser un número entero.");
             return;
         }
 
-        if (!telefono.matches("\\d{10,}")) {
-            mostrarError("El teléfono debe contener al menos 10 dígitos numéricos.");
+        // 3. Construir objeto temporal para validar
+        Paciente temporal = new Paciente(curp, nombre, edad,
+                                         telefono, alergias,
+                                         estatus != null ? estatus : "");
+
+        // 4. Validar usando el service (lanza IllegalArgumentException si algo falla)
+        try {
+            service.validar(temporal, new ArrayList<>(listaPacientes),
+                            pacienteEditando == null);
+        } catch (IllegalArgumentException e) {
+            mostrarError(e.getMessage());
             return;
         }
 
-        // 3. Verificar CURP duplicada (solo en alta)
+        // 5. Crear o actualizar el objeto en la lista
         if (pacienteEditando == null) {
-            boolean existe = listaPacientes.stream()
-                    .anyMatch(p -> p.getCurp().equalsIgnoreCase(curp));
-            if (existe) {
-                mostrarError("Ya existe un paciente con esa CURP.");
-                return;
-            }
-        }
-
-        // 4. Crear o actualizar objeto
-        if (pacienteEditando == null) {
-            listaPacientes.add(new Paciente(curp, nombre, edad,
-                                            telefono, alergias, estatus));
+            // ALTA
+            listaPacientes.add(temporal);
         } else {
+            // EDICIÓN
             pacienteEditando.setNombre(nombre);
             pacienteEditando.setEdad(edad);
             pacienteEditando.setTelefono(telefono);
@@ -128,9 +111,9 @@ public class FormController {
             pacienteEditando.setEstatus(estatus);
         }
 
-        // 5. Persistir en archivo
+        // 6. Persistir en archivo
         try {
-            service.guardarCambios(new java.util.ArrayList<>(listaPacientes));
+            service.guardarCambios(new ArrayList<>(listaPacientes));
             cerrarVentana();
         } catch (IOException e) {
             mostrarError("Error al guardar en archivo: " + e.getMessage());

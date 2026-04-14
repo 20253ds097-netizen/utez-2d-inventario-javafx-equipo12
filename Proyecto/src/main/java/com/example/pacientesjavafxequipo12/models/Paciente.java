@@ -1,4 +1,4 @@
-package com.example.pacientesjavafxequipo.models;
+package com.example.pacientesjavafxequipo12.models;
 
 public class Paciente {
     private String curp;

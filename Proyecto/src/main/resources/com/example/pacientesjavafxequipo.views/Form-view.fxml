@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-
-=======
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -10,7 +7,7 @@
 <VBox prefHeight="480.0" prefWidth="420.0" spacing="12.0"
       xmlns="http://javafx.com/javafx/17.0.12"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.pacientesjavafxequipo.Controllers.FormController">
+      fx:controller="com.example.pacientesjavafxequipo12.Controllers.FormController">
     <padding>
         <Insets bottom="25.0" left="25.0" right="25.0" top="25.0"/>
     </padding>
@@ -72,4 +69,3 @@
 
     </children>
 </VBox>
->>>>>>> dev
