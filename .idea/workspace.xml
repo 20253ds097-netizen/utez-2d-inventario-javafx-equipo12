@@ -19,7 +19,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
   <component name="MavenImportPreferences">
@@ -44,7 +44,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Merging main",
+    "git-widget-placeholder": "master",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/utez-2d-pacientes-javafx-equipo12",
     "node.js.detected.package.eslint": "true",
@@ -78,7 +78,7 @@
       <workItem from="1775698307110" duration="3331000" />
       <workItem from="1775742792360" duration="80000" />
       <workItem from="1775870337519" duration="18292000" />
-      <workItem from="1776091969694" duration="6056000" />
+      <workItem from="1776091969694" duration="6508000" />
     </task>
     <servers />
   </component>

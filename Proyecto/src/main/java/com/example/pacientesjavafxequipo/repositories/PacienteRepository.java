@@ -1,6 +1,10 @@
 package com.example.pacientesjavafxequipo.repositories;
 
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.nio.charset.StandardCharsets;
+>>>>>>> dev
 import java.nio.file.*;
 import java.util.List;
 
