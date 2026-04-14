@@ -25,7 +25,7 @@ public class FormController {
     }
 
     @FXML
-    public void guardar() {
+    public void Onguardar() {
         try {
             Paciente nuevo = new Paciente(
                 txtCurp.getText().trim(),
@@ -50,7 +50,7 @@ public class FormController {
     }
 
     @FXML
-    public void cancelar() {
+    public void Oncancelar() {
         cerrarVentana();
     }
 
