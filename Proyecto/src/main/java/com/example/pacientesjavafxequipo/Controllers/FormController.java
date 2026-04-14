@@ -2,6 +2,7 @@ package com.example.pacientesjavafxequipo.Controllers;
 
 import com.example.pacientesjavafxequipo.models.Paciente;
 import com.example.pacientesjavafxequipo.service.PacienteService;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -10,51 +11,151 @@ import java.io.IOException;
 
 public class FormController {
 
-    @FXML private TextField txtCurp;
-    @FXML private TextField txtNombre;
-    @FXML private TextField txtEdad;
-    @FXML private TextField txtTelefono;
-    @FXML private TextField txtAlergias;
-    @FXML private Label     lblError;
+    // ── Campos del formulario ─────────────────────────────────────
+    @FXML private Label     lbl_titulo_form;
+    @FXML private TextField txt_curp;
+    @FXML private TextField txt_nombre;
+    @FXML private TextField txt_edad;
+    @FXML private TextField txt_telefono;
+    @FXML private TextField txt_alergias;
+    @FXML private ComboBox<String> cmb_estatus;
+    @FXML private Label     lbl_error_form;
+    @FXML private Button    btn_guardar;
+    @FXML private Button    btn_cancelar;
 
-    private final PacienteService service = new PacienteService();
-    private MainController mainController;
+    // ── Estado interno ────────────────────────────────────────────
+    private Paciente pacienteEditando;          // null = modo alta
+    private ObservableList<Paciente> listaPacientes;
+    private PacienteService service;
 
-    public void setMainController(MainController mc) {
-        this.mainController = mc;
+    // ─────────────────────────────────────────────────────────────
+    @FXML
+    public void initialize() {
+        cmb_estatus.getItems().addAll("ACTIVO", "INACTIVO");
+        cmb_estatus.setValue("ACTIVO");
     }
 
-    @FXML
-    public void guardar() {
-        try {
-            Paciente nuevo = new Paciente(
-                txtCurp.getText().trim(),
-                txtNombre.getText().trim(),
-                Integer.parseInt(txtEdad.getText().trim()),
-                txtTelefono.getText().trim(),
-                txtAlergias.getText().trim(),
-                "activo"
-            );
-            service.agregarPaciente(nuevo);
+    /**
+     * Llamado desde MainController antes de mostrar la ventana.
+     * Si paciente == null  →  modo ALTA
+     * Si paciente != null  →  modo EDICIÓN
+     */
+    public void initData(Paciente paciente,
+                         ObservableList<Paciente> lista,
+                         PacienteService svc) {
+        this.listaPacientes  = lista;
+        this.service         = svc;
+        this.pacienteEditando = paciente;
 
-            if (mainController != null) mainController.cargarPacientes();
-            cerrarVentana();
-
-        } catch (NumberFormatException e) {
-            lblError.setText("La edad debe ser un número entero.");
-        } catch (IllegalArgumentException e) {
-            lblError.setText(e.getMessage());
-        } catch (IOException e) {
-            lblError.setText("Error al guardar: " + e.getMessage());
+        if (paciente != null) {
+            // Modo edición: rellenar campos
+            lbl_titulo_form.setText("Editar Paciente");
+            txt_curp.setText(paciente.getCurp());
+            txt_curp.setDisable(true);          // CURP no se puede cambiar
+            txt_nombre.setText(paciente.getNombre());
+            txt_edad.setText(String.valueOf(paciente.getEdad()));
+            txt_telefono.setText(paciente.getTelefono());
+            txt_alergias.setText(paciente.getAlergias());
+            cmb_estatus.setValue(paciente.getEstatus());
+        } else {
+            lbl_titulo_form.setText("Nuevo Paciente");
         }
     }
 
+    // ── Guardar (alta o edición) ───────────────────────────────────
     @FXML
-    public void cancelar() {
+    public void onGuardar() {
+        lbl_error_form.setText("");
+
+        // ── 1. Leer campos ────────────────────────────────────────
+        String curp     = txt_curp.getText().trim().toUpperCase();
+        String nombre   = txt_nombre.getText().trim();
+        String edadTxt  = txt_edad.getText().trim();
+        String telefono = txt_telefono.getText().trim();
+        String alergias = txt_alergias.getText().trim();
+        String estatus  = cmb_estatus.getValue();
+
+        // ── 2. Validaciones ───────────────────────────────────────
+        if (curp.isEmpty() || nombre.isEmpty() || edadTxt.isEmpty()
+                || telefono.isEmpty() || estatus == null) {
+            mostrarError("Todos los campos marcados con * son obligatorios.");
+            return;
+        }
+
+        if (nombre.length() < 5) {
+            mostrarError("El nombre debe tener al menos 5 caracteres.");
+            return;
+        }
+
+        int edad;
+        try {
+            edad = Integer.parseInt(edadTxt);
+            if (edad < 0 || edad > 120) {
+                mostrarError("La edad debe estar entre 0 y 120.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            mostrarError("La edad debe ser un número entero.");
+            return;
+        }
+
+        if (!telefono.matches("\\d{10,}")) {
+            mostrarError("El teléfono debe contener al menos 10 dígitos numéricos.");
+            return;
+        }
+
+        if (curp.length() < 18) {
+            mostrarError("La CURP debe tener al menos 18 caracteres.");
+            return;
+        }
+
+        // ── 3. Verificar CURP duplicado (solo en alta) ────────────
+        if (pacienteEditando == null) {
+            boolean existe = listaPacientes.stream()
+                    .anyMatch(p -> p.getCurp().equalsIgnoreCase(curp));
+            if (existe) {
+                mostrarError("Ya existe un paciente con esa CURP.");
+                return;
+            }
+        }
+
+        // ── 4. Crear o actualizar el objeto ───────────────────────
+        if (pacienteEditando == null) {
+            // ALTA
+            Paciente nuevo = new Paciente(curp, nombre, edad,
+                                          telefono, alergias, estatus);
+            listaPacientes.add(nuevo);
+        } else {
+            // EDICIÓN
+            pacienteEditando.setNombre(nombre);
+            pacienteEditando.setEdad(edad);
+            pacienteEditando.setTelefono(telefono);
+            pacienteEditando.setAlergias(alergias);
+            pacienteEditando.setEstatus(estatus);
+        }
+
+        // ── 5. Persistir en archivo ───────────────────────────────
+        try {
+            service.guardarCambios(listaPacientes);
+            cerrarVentana();
+        } catch (IOException e) {
+            mostrarError("Error al guardar en archivo: " + e.getMessage());
+        }
+    }
+
+    // ── Cancelar sin guardar ──────────────────────────────────────
+    @FXML
+    public void onCancelar() {
         cerrarVentana();
     }
 
+    // ── Helpers ───────────────────────────────────────────────────
+    private void mostrarError(String mensaje) {
+        lbl_error_form.setText(mensaje);
+    }
+
     private void cerrarVentana() {
-        ((Stage) txtCurp.getScene().getWindow()).close();
+        Stage stage = (Stage) btn_cancelar.getScene().getWindow();
+        stage.close();
     }
 }
