@@ -1,149 +1,67 @@
 package com.example.pacientesjavafxequipo12.service;
-import com.example.pacientesjavafxequipo12.models.Paciente;
-import com.example.pacientesjavafxequipo12.repositories.PacienteRepository;
 
-import java.io.IOException;
+import com.example.pacientesjavafxequipo12.models.Paciente;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PacienteService {
+    private final String NOMBRE_ARCHIVO = "data/pacientes.csv";
 
-    private final PacienteRepository repo = new PacienteRepository();
-
-    // ── Cargar pacientes desde archivo ────────────────────────────
+    // CARGAR DATOS (Requisito 4.B)
     public List<Paciente> obtenerPacientes() throws IOException {
-        List<String> lineas = repo.readAllLines();
         List<Paciente> lista = new ArrayList<>();
+        File file = new File(NOMBRE_ARCHIVO);
 
-        for (String linea : lineas) {
-            if (linea == null || linea.isBlank()) continue;
+        if (!file.exists()) file.createNewFile();
 
-            String[] p = linea.split(",", -1);
-
-            if (p.length != 6) {
-                System.err.println("Línea ignorada (formato inválido): " + linea);
-                continue;
-            }
-
-            try {
-                lista.add(new Paciente(
-                        p[0].trim(),
-                        p[1].trim(),
-                        Integer.parseInt(p[2].trim()),
-                        p[3].trim(),
-                        p[4].trim(),
-                        p[5].trim()
-                ));
-            } catch (NumberFormatException e) {
-                System.err.println("Edad inválida en línea: " + linea);
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] d = linea.split(",");
+                if (d.length == 6) {
+                    lista.add(new Paciente(d[0], d[1], Integer.parseInt(d[2]), d[3], d[4], d[5]));
+                }
             }
         }
         return lista;
     }
 
-    // ── Alias para compatibilidad con MainController ──────────────
-    public List<Paciente> loadPacientes() throws IOException {
-        return obtenerPacientes();
-    }
-
-    // ── Validaciones ──────────────────────────────────────────────
-    public void validar(Paciente p, List<Paciente> actuales, boolean esNuevo) {
-        if (p.getCurp().isBlank())
-            throw new IllegalArgumentException("La CURP no puede estar vacía.");
-        if (p.getCurp().length() < 18)
-            throw new IllegalArgumentException("La CURP debe tener al menos 18 caracteres.");
-        if (p.getNombre().isBlank() || p.getNombre().length() < 5)
-            throw new IllegalArgumentException("El nombre debe tener al menos 5 caracteres.");
-        if (p.getEdad() < 0 || p.getEdad() > 120)
-            throw new IllegalArgumentException("La edad debe estar entre 0 y 120.");
-        if (!p.getTelefono().matches("\\d{10,}"))
-            throw new IllegalArgumentException("El teléfono debe tener al menos 10 dígitos.");
-        if (p.getEstatus() == null || p.getEstatus().isBlank())
-            throw new IllegalArgumentException("El estatus no puede estar vacío.");
-
-        if (esNuevo) {
-            for (Paciente a : actuales) {
-                if (a.getCurp().equalsIgnoreCase(p.getCurp()))
-                    throw new IllegalArgumentException("Ya existe un paciente con esa CURP.");
-            }
-        }
-    }
-
-    // ── Guardar lista completa en archivo ─────────────────────────
+    // GUARDAR DATOS (Requisito 4.B)
     public void guardarCambios(List<Paciente> lista) throws IOException {
-        List<String> lineas = new ArrayList<>();
-        for (Paciente p : lista) lineas.add(p.toString());
-        repo.saveAllLines(lineas);
-    }
-
-    // ── Alias para compatibilidad con ObservableList ──────────────
-    public void saveAllPacientes(List<Paciente> lista) throws IOException {
-        guardarCambios(lista);
-    }
-
-    public void saveAllPacientes(javafx.collections.ObservableList<Paciente> lista)
-            throws IOException {
-        guardarCambios(new ArrayList<>(lista));
-    }
-
-    // ── Alta de paciente ──────────────────────────────────────────
-    public void agregarPaciente(Paciente nuevo) throws IOException {
-        List<Paciente> actuales = obtenerPacientes();
-        validar(nuevo, actuales, true);
-        actuales.add(nuevo);
-        guardarCambios(actuales);
-    }
-
-    // ── Editar paciente existente ─────────────────────────────────
-    public void editarPaciente(Paciente editado) throws IOException {
-        List<Paciente> lista = obtenerPacientes();
-        validar(editado, lista, false);
-        for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getCurp().equalsIgnoreCase(editado.getCurp())) {
-                lista.set(i, editado);
-                break;
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(NOMBRE_ARCHIVO))) {
+            for (Paciente p : lista) {
+                bw.write(p.toString());
+                bw.newLine();
             }
         }
-        guardarCambios(lista);
     }
 
-    // ── Eliminar paciente por CURP ────────────────────────────────
-    public void eliminarPaciente(String curp) throws IOException {
-        List<Paciente> lista = obtenerPacientes();
-        lista.removeIf(p -> p.getCurp().equalsIgnoreCase(curp));
-        guardarCambios(lista);
-    }
-
-    // ── Cambiar estatus ACTIVO <-> INACTIVO ───────────────────────
-    public void cambiarEstatus(String curp) throws IOException {
-        List<Paciente> lista = obtenerPacientes();
-        for (Paciente p : lista) {
-            if (p.getCurp().equalsIgnoreCase(curp)) {
-                String nuevoEstatus = p.getEstatus().equalsIgnoreCase("ACTIVO")
-                        ? "INACTIVO" : "ACTIVO";
-                p.setEstatus(nuevoEstatus);
-                break;
+    // VALIDACIONES MÍNIMAS (Requisito 4.C)
+    public void validar(Paciente p, List<Paciente> actual, boolean esNuevo) throws IllegalArgumentException {
+        // 1. No permitir campos vacíos
+        if (p.getCurp().isEmpty() || p.getNombre().isEmpty() || p.getTelefono().isEmpty()) {
+            throw new IllegalArgumentException("Error: Los campos con * no pueden estar vacíos.");
+        }
+        // 2. Nombre mínimo 5 caracteres
+        if (p.getNombre().length() < 5) {
+            throw new IllegalArgumentException("Error: El nombre debe tener al menos 5 caracteres.");
+        }
+        // 3. Edad en rango 0 a 120
+        if (p.getEdad() < 0 || p.getEdad() > 120) {
+            throw new IllegalArgumentException("Error: La edad debe ser entre 0 y 120.");
+        }
+        // 4. Teléfono solo dígitos y longitud mínima 10
+        if (!p.getTelefono().matches("\\d{10,}")) {
+            throw new IllegalArgumentException("Error: El teléfono debe tener al menos 10 dígitos numéricos.");
+        }
+        // 5. Evitar duplicados por CURP (Solo si es registro nuevo)
+        if (esNuevo) {
+            for (Paciente existente : actual) {
+                if (existente.getCurp().equalsIgnoreCase(p.getCurp())) {
+                    throw new IllegalArgumentException("Error: Ya existe un paciente con esta CURP.");
+                }
             }
         }
-        guardarCambios(lista);
-    }
-
-    // ── Contadores ────────────────────────────────────────────────
-    public long totalActivos() throws IOException {
-        long count = 0;
-        for (Paciente p : obtenerPacientes())
-            if (p.getEstatus().equalsIgnoreCase("ACTIVO")) count++;
-        return count;
-    }
-
-    public long totalInactivos() throws IOException {
-        long count = 0;
-        for (Paciente p : obtenerPacientes())
-            if (p.getEstatus().equalsIgnoreCase("INACTIVO")) count++;
-        return count;
-    }
-
-    public long totalPacientes() throws IOException {
-        return obtenerPacientes().size();
     }
 }

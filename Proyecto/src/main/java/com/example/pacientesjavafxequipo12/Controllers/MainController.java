@@ -2,6 +2,7 @@ package com.example.pacientesjavafxequipo12.Controllers;
 
 import com.example.pacientesjavafxequipo12.models.Paciente;
 import com.example.pacientesjavafxequipo12.service.PacienteService;
+import com.example.pacientesjavafxequipo12.utils.Paths;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -17,7 +18,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class MainController {
+public class  MainController {
 
     // ── Tabla y columnas ──────────────────────────────────────────
     @FXML private TableView<Paciente>            tbl_productos;
@@ -37,8 +38,8 @@ public class MainController {
     @FXML private Button btn_nuevo;
     @FXML private Button btn_recargar;
     @FXML private Button btn_editar;
-    @FXML private Button btn_eliminar;
     @FXML private Button btn_cambiarEstatus;
+    @FXML private Button btn_eliminar;
 
     // ── Resumen ───────────────────────────────────────────────────
     @FXML private Label lbl_total;
@@ -70,6 +71,7 @@ public class MainController {
                     setStyle("-fx-background-color: #ffe0e0;");
                 else setStyle("");
             }
+
         });
 
         // Búsqueda en tiempo real por nombre o CURP
@@ -199,8 +201,7 @@ public class MainController {
     private void abrirFormulario(Paciente paciente) {
         lbl_error.setText("");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                    "/com/example/pacientesjavafxequipo.views/Form-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(Paths.FORM_VIEW));
             Parent root = loader.load();
 
             FormController controller = loader.getController();
