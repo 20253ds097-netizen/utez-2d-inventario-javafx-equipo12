@@ -75,7 +75,7 @@ public class FormController {
         String alergias = txt_alergias.getText().trim();
         String estatus  = cmb_estatus.getValue();
 
-        // 2. Parsear edad antes de crear el objeto
+        // 2. validad la  edad antes de crear el objeto
         int edad;
         try {
             edad = Integer.parseInt(edadTxt);

@@ -20,7 +20,7 @@ import java.io.IOException;
 
 public class  MainController {
 
-    // ── Tabla y columnas ──────────────────────────────────────────
+    //Tabla y columnas
     @FXML private TableView<Paciente>            tbl_productos;
     @FXML private TableColumn<Paciente, String>  col_id;
     @FXML private TableColumn<Paciente, String>  col_nombre;
@@ -29,29 +29,22 @@ public class  MainController {
     @FXML private TableColumn<Paciente, String>  col_alergias;
     @FXML private TableColumn<Paciente, String>  col_estatus;
 
-    // ── Búsqueda y mensajes ───────────────────────────────────────
+    // Búsqueda y mensajes
     @FXML private TextField txt_buscar;
     @FXML private Label     lbl_titulo;
     @FXML private Label     lbl_error;
 
-    // ── Botones ───────────────────────────────────────────────────
-    @FXML private Button btn_nuevo;
-    @FXML private Button btn_recargar;
-    @FXML private Button btn_editar;
-    @FXML private Button btn_cambiarEstatus;
-    @FXML private Button btn_eliminar;
-
-    // ── Resumen ───────────────────────────────────────────────────
+    //Resumen
     @FXML private Label lbl_total;
     @FXML private Label lbl_activos;
     @FXML private Label lbl_inactivos;
 
-    // ── Estado interno ────────────────────────────────────────────
+    //Estado interno
     private final ObservableList<Paciente> listaPacientes =
             FXCollections.observableArrayList();
     private final PacienteService service = new PacienteService();
 
-    // ─────────────────────────────────────────────────────────────
+
     @FXML
     public void initialize() {
         col_id.setCellValueFactory(new PropertyValueFactory<>("curp"));
@@ -94,13 +87,8 @@ public class  MainController {
         onReload();
     }
 
-    // ── Nuevo paciente ────────────────────────────────────────────
-    @FXML
-    public void onOpenAddForm() {
-        abrirFormulario(null);
-    }
 
-    // ── Editar paciente seleccionado ──────────────────────────────
+    //Editar paciente seleccionado
     @FXML
     public void onEditProduct() {
         Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
@@ -111,7 +99,7 @@ public class  MainController {
         }
     }
 
-    // ── Cambiar estatus ACTIVO <-> INACTIVO ───────────────────────
+    //Cambiar estatus ACTIVO <-> INACTIVO
     @FXML
     public void onCambiarEstatus() {
         Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
@@ -142,19 +130,19 @@ public class  MainController {
         }
     }
 
-    // ── Recargar desde archivo ────────────────────────────────────
+    //Recargar desde archivo
     @FXML
     public void onReload() {
         try {
             lbl_error.setText("");
             listaPacientes.setAll(service.obtenerPacientes());
             actualizarResumen();
-        } catch (IOException e) {
-            mostrarError("Error al cargar datos: " + e.getMessage());
+        } catch (Exception e) { // Cambiado de IOException a Exception
+            mostrarError("Error inesperado: " + e.getMessage());
         }
     }
 
-    // ── Eliminar paciente con confirmación ────────────────────────
+    //Eliminar paciente con confirmación
     @FXML
     public void onDeleteProduct() {
         Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
@@ -181,7 +169,7 @@ public class  MainController {
         }
     }
 
-    // ── Helpers privados ──────────────────────────────────────────
+    //Helpers privados
     private void actualizarResumen() {
         long activos = listaPacientes.stream()
                 .filter(p -> p.getEstatus().equalsIgnoreCase("ACTIVO"))
@@ -197,6 +185,13 @@ public class  MainController {
         lbl_error.setTextFill(javafx.scene.paint.Color.RED);
         lbl_error.setText(mensaje);
     }
+
+    //Nuevo paciente
+    @FXML
+    public void onOpenAddForm() {
+        abrirFormulario(null);
+    }
+
 
     private void abrirFormulario(Paciente paciente) {
         lbl_error.setText("");

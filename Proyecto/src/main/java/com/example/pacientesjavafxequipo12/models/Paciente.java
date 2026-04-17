@@ -26,7 +26,7 @@ public class Paciente {
     }
 
 
-    //getters (consultar) y setters (cambiar o modificar) pare la tablaview
+    //getters (consultar) y setters (cambiar o modificar) para la tablaview
     public String getCurp() {
         return curp;
     }
