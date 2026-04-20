@@ -21,7 +21,6 @@ public class FormController {
     @FXML private TextField        txt_alergias;
     @FXML private ComboBox<String> cmb_estatus;
     @FXML private Label            lbl_error_form;
-    @FXML private Button           btn_guardar;
     @FXML private Button           btn_cancelar;
 
     //Estado interno

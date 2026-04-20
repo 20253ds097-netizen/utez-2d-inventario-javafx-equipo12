@@ -13,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -31,7 +32,6 @@ public class   MainController {
 
     // Búsqueda y mensajes
     @FXML private TextField txt_buscar;
-    @FXML private Label     lbl_titulo;
     @FXML private Label     lbl_error;
 
     //Resumen
@@ -111,124 +111,6 @@ public class   MainController {
         onReload();
     }
 
-
-    //Editar paciente seleccionado
-    @FXML
-    public void onEditProduct() {
-        Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
-        if (seleccionado != null) {
-            abrirFormulario(seleccionado);
-        } else {
-            mostrarError("Selecciona un paciente de la tabla para editar.");
-        }
-    }
-
-    // cambiar estatus ACTIVO <-> INACTIVO
-    @FXML
-    public void onCambiarEstatus() {
-        // 1. OBTENER SELECCIÓN: Miramos qué fila tiene seleccionada el usuario en la tabla.
-        Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
-
-        // 2. VALIDAR SELECCIÓN: Si no hay nada seleccionado, avisamos y salimos del metodo.
-        if (seleccionado == null) {
-            mostrarError("Selecciona un paciente para cambiar su estatus.");
-            return;
-        }
-
-        // 3. LÓGICA DE INTERRUPTOR (Toggle):
-        // Si el estatus es ACTIVO, el nuevo será INACTIVO, y viceversa.
-        String nuevoEstatus = seleccionado.getEstatus()
-                .equalsIgnoreCase("ACTIVO") ? "INACTIVO" : "ACTIVO";
-
-        // 4. CONFIRMACIÓN: Creamos una ventanita de alerta para que el usuario confirme.
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Cambiar Estatus");
-        confirm.setHeaderText("¿Cambiar estatus de " + seleccionado.getNombre()
-                + " a " + nuevoEstatus + "?");
-
-        // 5. ESPERAR RESPUESTA: El programa se detiene hasta que el usuario pique "OK" o "Cancelar".
-        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-
-            // 6. APLICAR CAMBIO: Si aceptó, actualizamos el atributo en el objeto.
-            seleccionado.setEstatus(nuevoEstatus);
-
-            try {
-                // 7. PERSISTENCIA: Guardamos la lista completa actualizada en el archivo CSV.
-                service.guardarCambios(new java.util.ArrayList<>(listaPacientes));
-
-                // 8. ACTUALIZAR INTERFAZ:
-                tbl_productos.refresh(); // Fuerza a la tabla a redibujarse (y aplicar los colores de fila)
-                actualizarResumen();     // Recalcula el total de activos/inactivos
-
-                // 9. FEEDBACK POSITIVO: Pintamos el mensaje de éxito en verde.
-                lbl_error.setTextFill(javafx.scene.paint.Color.GREEN);
-                lbl_error.setText("Estatus actualizado a: " + nuevoEstatus);
-
-            } catch (IOException e) {
-                // Si algo falla al escribir el archivo, mostramos el error.
-                mostrarError("Error al guardar cambio de estatus: " + e.getMessage());
-            }
-        }
-    }
-
-    //Recargar desde archivo
-    @FXML
-    public void onReload() {
-        try {
-            // 1. LIMPIEZA: Quitamos cualquier mensaje de error que estuviera escrito en la pantalla.
-            lbl_error.setText("");
-
-            // 2. CARGA DE DATOS:
-            // service.obtenerPacientes() va al archivo CSV, lee cada línea y las convierte en objetos.
-            // listaPacientes.setAll(...) toma esos objetos y REEMPLAZA todo lo que habia en la
-            // tabla actualmente. Así nos aseguramos de tener la versión más reciente del archivo.
-            listaPacientes.setAll(service.obtenerPacientes());
-
-            // 3. ACTUALIZACIÓN VISUAL:
-            // Como los datos cambiaron, llamamos a esta función para que vuelva a contar
-            // cuántos pacientes hay en total, cuántos activos y cuántos inactivos.
-            actualizarResumen();
-
-        } catch (Exception e) {
-            // 4. MANEJO DE ERRORES:
-            // Si el archivo está corrupto, no existe o no hay permisos, el programa no se cierra.
-            // En su lugar, atrapa el error y lo muestra en letras rojas al usuario.
-            mostrarError("Error inesperado: " + e.getMessage());
-        }
-    }
-
-    @FXML
-    public void onDeleteProduct() {
-        // 1. ¿Hay alguien seleccionado?
-        Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            mostrarError("Selecciona un paciente de la tabla para eliminar.");
-            return;
-        }
-
-        // 2. PREGUNTAR: Creamos una alerta de confirmación (Botones Aceptar/Cancelar).
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Eliminar Paciente");
-        alert.setHeaderText("¿Eliminar a: " + seleccionado.getNombre() + "?");
-        alert.setContentText("Esta acción no se puede deshacer.");
-
-        // 3. SEGUIMIENTO: Si el usuario presiona OK
-        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
-            // Borramos de la lista visual (la que ve el usuario)
-            listaPacientes.remove(seleccionado);
-            try {
-                // Guardamos la lista (ya sin ese paciente) en el archivo CSV
-                service.guardarCambios(new java.util.ArrayList<>(listaPacientes));
-
-                actualizarResumen(); // Recalculamos totales
-                lbl_error.setTextFill(javafx.scene.paint.Color.GREEN);
-                lbl_error.setText("Paciente eliminado correctamente.");
-            } catch (IOException e) {
-                mostrarError("Error al eliminar del archivo: " + e.getMessage());
-            }
-        }
-    }
-
     //Helpers privados
     private void actualizarResumen() {
         // .stream() recorre la lista uno por uno.
@@ -257,8 +139,11 @@ public class   MainController {
     //Abrir formulario para un Nuevo Paciente
     @FXML
     public void onOpenAddForm() {
+
         abrirFormulario(null);
+
     }
+
    //metodo auxiliar para no abrir ventana dos veces
     private void abrirFormulario(Paciente paciente) {
         // 1. Limpiamos cualquier mensaje de error previo en la pantalla principal.
@@ -300,6 +185,122 @@ public class   MainController {
         } catch (IOException e) {
             // Si el archivo FXML no existe o tiene un error, mostramos el mensaje.
             mostrarError("No se pudo abrir el formulario: " + e.getMessage());
+        }
+    }
+
+    //Recargar desde archivo
+    @FXML
+    public void onReload() {
+        try {
+            // 1. LIMPIEZA: Quitamos cualquier mensaje de error que estuviera escrito en la pantalla.
+            lbl_error.setText("");
+
+            // 2. CARGA DE DATOS:
+            // service.obtenerPacientes() va al archivo CSV, lee cada línea y las convierte en objetos.
+            // listaPacientes.setAll(...) toma esos objetos y REEMPLAZA todo lo que habia en la
+            // tabla actualmente. Así nos aseguramos de tener la versión más reciente del archivo.
+            listaPacientes.setAll(service.obtenerPacientes());
+
+            // 3. ACTUALIZACIÓN VISUAL:
+            // Como los datos cambiaron, llamamos a esta función para que vuelva a contar
+            // cuántos pacientes hay en total, cuántos activos y cuántos inactivos.
+            actualizarResumen();
+
+        } catch (Exception e) {
+            // 4. MANEJO DE ERRORES:
+            // Si el archivo está corrupto, no existe o no hay permisos, el programa no se cierra.
+            // En su lugar, atrapa el error y lo muestra en letras rojas al usuario.
+            mostrarError("Error inesperado: " + e.getMessage());
+        }
+    }
+
+    // cambiar estatus ACTIVO <-> INACTIVO
+    @FXML
+    public void onCambiarEstatus() {
+        // 1. OBTENER SELECCIÓN: Miramos qué fila tiene seleccionada el usuario en la tabla.
+        Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
+
+        // 2. VALIDAR SELECCIÓN: Si no hay nada seleccionado, avisamos y salimos del metodo.
+        if (seleccionado == null) {
+            mostrarError("Selecciona un paciente para cambiar su estatus.");
+            return;
+        }
+
+        // 3. LÓGICA DE INTERRUPTOR (Toggle):
+        // Si el estatus es ACTIVO, el nuevo será INACTIVO, y viceversa.
+        String nuevoEstatus = seleccionado.getEstatus()
+                .equalsIgnoreCase("ACTIVO") ? "INACTIVO" : "ACTIVO";
+
+        // 4. CONFIRMACIÓN: Creamos una ventanita de alerta para que el usuario confirme.
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Cambiar Estatus");
+        confirm.setHeaderText("¿Cambiar estatus de " + seleccionado.getNombre()
+                + " a " + nuevoEstatus + "?");
+
+        // 5. ESPERAR RESPUESTA: El programa se detiene hasta que el usuario pique "OK" o "Cancelar".
+        if (confirm.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+
+            // 6. APLICAR CAMBIO: Si aceptó, actualizamos el atributo en el objeto.
+            seleccionado.setEstatus(nuevoEstatus);
+
+            try {
+                // 7. PERSISTENCIA: Guardamos la lista completa actualizada en el archivo CSV.
+                service.guardarCambios(new java.util.ArrayList<>(listaPacientes));
+
+                // 8. ACTUALIZAR INTERFAZ:
+                tbl_productos.refresh(); // Fuerza a la tabla a redibujarse (y aplicar los colores de fila)
+                actualizarResumen();     // Recalcula el total de activos/inactivos
+
+                // 9. FEEDBACK POSITIVO: Pintamos el mensaje de éxito en verde.
+                lbl_error.setTextFill(Color.RED);
+                lbl_error.setText("Estatus actualizado a: " + nuevoEstatus);
+
+            } catch (IOException e) {
+                // Si algo falla al escribir el archivo, mostramos el error.
+                mostrarError("Error al guardar cambio de estatus: " + e.getMessage());
+            }
+        }
+    }
+
+    //Editar paciente seleccionado
+    @FXML
+    public void onEditProduct() {
+        Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
+        if (seleccionado != null) {
+            abrirFormulario(seleccionado);
+        } else {
+            mostrarError("Selecciona un paciente de la tabla para editar.");
+        }
+    }
+    @FXML
+    public void onDeleteProduct() {
+        // 1. ¿Hay alguien seleccionado?
+        Paciente seleccionado = tbl_productos.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarError("Selecciona un paciente de la tabla para eliminar.");
+            return;
+        }
+
+        // 2. PREGUNTAR: Creamos una alerta de confirmación (Botones Aceptar/Cancelar).
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Eliminar Paciente");
+        alert.setHeaderText("¿Eliminar a: " + seleccionado.getNombre() + "?");
+        alert.setContentText("Esta acción no se puede deshacer.");
+
+        // 3. SEGUIMIENTO: Si el usuario presiona OK
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            // Borramos de la lista visual
+            listaPacientes.remove(seleccionado);
+            try {
+                // Guardamos la lista  ya sin el registro en el archivo CSV
+                service.guardarCambios(new java.util.ArrayList<>(listaPacientes));
+
+                actualizarResumen(); // Recalculamos
+                lbl_error.setTextFill(Color.RED);
+                lbl_error.setText("Paciente eliminado correctamente.");
+            } catch (IOException e) {
+                mostrarError("Error al eliminar del archivo: " + e.getMessage());
+            }
         }
     }
 }
