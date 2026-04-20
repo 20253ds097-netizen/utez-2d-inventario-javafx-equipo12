@@ -57,6 +57,7 @@ import java.util.List;
 
                 return lista;
             }
+
             // GUARDAR DATOS (Requisito 4.B)
             public void guardarCambios(List<Paciente> lista) throws IOException {
                 try (BufferedWriter bw = new BufferedWriter(new FileWriter(Paths.NOMBRE_ARCHIVO))) {
@@ -82,7 +83,7 @@ import java.util.List;
             throw new IllegalArgumentException("Error: La edad debe ser entre 0 y 120.");
         }
         // 4. Teléfono solo dígitos y longitud mínima 10
-        // \\d se pone para analizar que tenga la validacion de 10 dijitos
+        // \\d se pone pa ra analizar que tenga la validacion de 10 dijitos
 
         if (!p.getTelefono().matches("\\d{10,}")) {
             throw new IllegalArgumentException("Error: El teléfono debe tener al menos 10 dígitos numéricos.");

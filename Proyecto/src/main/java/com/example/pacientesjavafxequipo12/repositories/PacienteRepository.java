@@ -25,17 +25,24 @@ public class PacienteRepository {
             System.err.println("Error al inicializar el almacenamiento: " + e.getMessage());
         }
     }
-
+ //Lee todas las líneas del archivo configurado.
+ //  Si el archivo no existe, devuelve una lista vacía en lugar de lanzar una excepción.
+    //Este metodo se encarga de extraer la información del disco duro y traerla a la memoria del programa.
     public List<String> readAllLines() throws IOException {
         Path path = java.nio.file.Paths.get(Paths.NOMBRE_ARCHIVO);
+
+
+        //verifica existencia del archivo,Si el archivo no existe, devuelve una lista vacía
         if (!Files.exists(path)) return List.of();
         return Files.readAllLines(path);
     }
-
+//toma los datos que tiene el programa y los escribe de forma permanente en el archivo.
     public void saveAllLines(List<String> lines) throws IOException {
-        // StandardOpenOption.CREATE y TRUNCATE_EXISTING aseguran que el archivo se limpie y se escriba lo nuevo
         Path path = java.nio.file.Paths.get(Paths.NOMBRE_ARCHIVO);
+        //recibe la lista de strings que deseamos guardar
         Files.write(path, lines,
+                // StandardOpenOption.CREATE y TRUNCATE_EXISTING aseguran
+                // que el archivo se limpie y se escriba lo nuevo
                 StandardOpenOption.CREATE,
                 StandardOpenOption.TRUNCATE_EXISTING);
     }
