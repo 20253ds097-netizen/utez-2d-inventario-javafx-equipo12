@@ -85,9 +85,10 @@ import java.util.List;
         // 4. Teléfono solo dígitos y longitud mínima 10
         // \\d se pone pa ra analizar que tenga la validacion de 10 dijitos
 
-        if (!p.getTelefono().matches("\\d{10,}")) {
+        if (!p.getTelefono().matches("\\d{10}")) {
             throw new IllegalArgumentException("Error: El teléfono debe tener al menos 10 dígitos numéricos.");
         }
+
         // 5. Evitar duplicados por CURP (Solo si es registro nuevo)
         if (esNuevo) {
             for (Paciente existente : actual) {
