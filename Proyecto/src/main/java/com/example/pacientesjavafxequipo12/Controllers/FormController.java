@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class FormController {
 
-    // ── Campos del formulario ─────────────────────────────────────
+    //Campos del formulario
     @FXML private Label            lbl_titulo_form;
     @FXML private TextField        txt_curp;
     @FXML private TextField        txt_nombre;
@@ -21,53 +21,67 @@ public class FormController {
     @FXML private TextField        txt_alergias;
     @FXML private ComboBox<String> cmb_estatus;
     @FXML private Label            lbl_error_form;
-    @FXML private Button           btn_guardar;
     @FXML private Button           btn_cancelar;
 
-    // ── Estado interno ────────────────────────────────────────────
+    //Estado interno
     private Paciente                 pacienteEditando;
     private ObservableList<Paciente> listaPacientes;
     private PacienteService          service;
 
-    // ─────────────────────────────────────────────────────────────
+    //Metodo de inicializacion automatica
     @FXML
     public void initialize() {
+        // 1. Opciones disponibles
         cmb_estatus.getItems().addAll("ACTIVO", "INACTIVO");
+        // 2. Por defecto
         cmb_estatus.setValue("ACTIVO");
     }
 
     /**
-     * Llamado desde MainController antes de mostrar la ventana.
-     * paciente == null  →  modo ALTA
-     * paciente != null  →  modo EDICIÓN
+     * Metodo para inyectar datos (Puente entre ventanas)
+     * Este metodo NO es automatico. El MainController lo llama manualmente
+     * justo despues de crear la ventana pero antes de mostrarla.
      */
     public void initData(Paciente paciente,
                          ObservableList<Paciente> lista,
-                         PacienteService svc) {
+                         PacienteService validar) {
+         //variables globales para usar mas tarde
         this.listaPacientes   = lista;
-        this.service          = svc;
+        this.service          = validar;
         this.pacienteEditando = paciente;
 
         if (paciente != null) {
+
             lbl_titulo_form.setText("Editar Paciente");
+
+            // Llenamos los campos con lo datos del paciente.
             txt_curp.setText(paciente.getCurp());
-            txt_curp.setDisable(true);   // CURP no se puede cambiar
+            txt_curp.setDisable(true);
+
             txt_nombre.setText(paciente.getNombre());
+
+            // Convertimos la edad
             txt_edad.setText(String.valueOf(paciente.getEdad()));
+
             txt_telefono.setText(paciente.getTelefono());
             txt_alergias.setText(paciente.getAlergias());
             cmb_estatus.setValue(paciente.getEstatus());
+
         } else {
             lbl_titulo_form.setText("Nuevo Paciente");
         }
     }
 
-    // ── Guardar (alta o edición) ──────────────────────────────────
+
+
     @FXML
     public void onGuardar() {
+
         lbl_error_form.setText("");
 
-        // 1. Leer campos
+        // 1. Leer campos y los normaliza
+        //trim() para quitar espacios accidentales al inicio o final
+        // .toUpperCase() para que la CURP siempre esté en mayúsculas
         String curp     = txt_curp.getText().trim().toUpperCase();
         String nombre   = txt_nombre.getText().trim();
         String edadTxt  = txt_edad.getText().trim();
@@ -75,7 +89,8 @@ public class FormController {
         String alergias = txt_alergias.getText().trim();
         String estatus  = cmb_estatus.getValue();
 
-        // 2. Parsear edad antes de crear el objeto
+        // 2. validad la edad antes de crear el objeto
+        //valida que la edad sea un numero entero
         int edad;
         try {
             edad = Integer.parseInt(edadTxt);
@@ -84,12 +99,14 @@ public class FormController {
             return;
         }
 
-        // 3. Construir objeto temporal para validar
+
+        // 3. Construir objeto temporal para validar si la validacion falla se descarta
         Paciente temporal = new Paciente(curp, nombre, edad,
                                          telefono, alergias,
                                          estatus != null ? estatus : "");
 
-        // 4. Validar usando el service (lanza IllegalArgumentException si algo falla)
+        // 4. Validar usando el service punto validad para obtener las
+        // VALIDACIONES MÍNIMAS (Requisito 4.C)
         try {
             service.validar(temporal, new ArrayList<>(listaPacientes),
                             pacienteEditando == null);
@@ -98,7 +115,7 @@ public class FormController {
             return;
         }
 
-        // 5. Crear o actualizar el objeto en la lista
+        // 5. Crear  el objeto en la lista sin refrescar
         if (pacienteEditando == null) {
             // ALTA
             listaPacientes.add(temporal);
@@ -118,21 +135,26 @@ public class FormController {
         } catch (IOException e) {
             mostrarError("Error al guardar en archivo: " + e.getMessage());
         }
+
     }
 
-    // ── Cancelar sin guardar ──────────────────────────────────────
+    //Cancelar sin guardar
+// Este metodo se activa cuando el usuario hace clic en el boton "Cancelar"
     @FXML
     public void onCancelar() {
         cerrarVentana();
     }
 
-    // ── Helpers ───────────────────────────────────────────────────
+//Helpers (Funciones de ayuda)
+
     private void mostrarError(String mensaje) {
         lbl_error_form.setText(mensaje);
     }
 
+    // Este metodo contiene la lógica técnica para cerrar la ventana de forma segura
     private void cerrarVentana() {
         Stage stage = (Stage) btn_cancelar.getScene().getWindow();
+
         stage.close();
     }
 }

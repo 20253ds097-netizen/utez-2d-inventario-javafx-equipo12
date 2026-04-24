@@ -2,7 +2,8 @@ package com.example.pacientesjavafxequipo12.models;
 
 /**
  * Clase Modelo que representa al Paciente.
- * Cumple con el requisito de POO (Encapsulamiento).
+ * Cumple con el requisito de POO (Encapsulamiento) como rubrica de evaluacion
+ * puesta por el profe.
  */
 public class Paciente {
 
@@ -26,7 +27,7 @@ public class Paciente {
     }
 
 
-    //getters (consultar) y setters (cambiar o modificar) pare la tablaview
+    //getters (consultar) y setters (cambiar o modificar) para la tablaview
     public String getCurp() {
         return curp;
     }
