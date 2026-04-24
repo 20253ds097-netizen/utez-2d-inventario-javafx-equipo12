@@ -17,25 +17,26 @@ import java.util.List;
                 List<Paciente> lista = new ArrayList<>();
 
                 try {
-                    //
+
                     File archivo = new File(Paths.NOMBRE_ARCHIVO);
 
-                    //
+                    //crea un archivo
                     if (archivo.getParentFile() != null) {
                         archivo.getParentFile().mkdirs();
                     }
 
-                    //
+                    //crea un archivo vacio si no hay archivo
                     if (!archivo.exists()) {
                         archivo.createNewFile();
                     }
 
+                   //lectura
                     BufferedReader br = new BufferedReader(new FileReader(archivo));
                     String linea;
 
                     while ((linea = br.readLine()) != null) {
                         String[] datos = linea.split(",");
-
+                         //rompe la cadena y desmenuza la ifo
                         if (datos.length == 6) {
                             Paciente p = new Paciente(
                                     datos[0],
@@ -56,6 +57,7 @@ import java.util.List;
                 }
 
                 return lista;
+
             }
 
             // GUARDAR DATOS (Requisito 4.B)
@@ -70,9 +72,9 @@ import java.util.List;
 
             // VALIDACIONES MÍNIMAS (Requisito 4.C)
             public void validar(Paciente p, List<Paciente> actual, boolean esNuevo) throws IllegalArgumentException {
-                // 1. No permitir campos vacíos
+                // 1. No permitir campos vacíos si cualquiera falla exeption OR
                 if (p.getCurp().isEmpty() || p.getNombre().isEmpty() || p.getTelefono().isEmpty()) {
-            throw new IllegalArgumentException("Error: Los campos con * no pueden estar vacíos.");
+            throw new IllegalArgumentException("Error: Los campos no pueden estar vacíos.");
         }
         // 2. Nombre mínimo 5 caracteres
         if (p.getNombre().length() < 5) {
@@ -80,16 +82,15 @@ import java.util.List;
         }
         // 3. Edad en rango 0 a 120
         if (p.getEdad() < 0 || p.getEdad() > 120) {
-            throw new IllegalArgumentException("Error: La edad debe ser entre 0 y 120.");
+            throw new IllegalArgumentException("Error: La edad debe ser entre 0 y 120 nadamas.");
         }
         // 4. Teléfono solo dígitos y longitud mínima 10
         // \\d se pone pa ra analizar que tenga la validacion de 10 dijitos
-
         if (!p.getTelefono().matches("\\d{10}")) {
             throw new IllegalArgumentException("Error: El teléfono debe tener al menos 10 dígitos numéricos.");
         }
 
-        // 5. Evitar duplicados por CURP (Solo si es registro nuevo)
+        // 5. Evitar duplicados por CURP
         if (esNuevo) {
             for (Paciente existente : actual) {
                 if (existente.getCurp().equalsIgnoreCase(p.getCurp())) {

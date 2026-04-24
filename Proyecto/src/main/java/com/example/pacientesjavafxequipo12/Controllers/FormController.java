@@ -31,10 +31,9 @@ public class FormController {
     //Metodo de inicializacion automatica
     @FXML
     public void initialize() {
-        // 1. Llenamos el ComboBox (menú desplegable) con las dos opciones disponibles.
+        // 1. Opciones disponibles
         cmb_estatus.getItems().addAll("ACTIVO", "INACTIVO");
-
-        // 2. Por defecto, dejamos seleccionada la opción "ACTIVO" para ahorrar tiempo al usuario.
+        // 2. Por defecto
         cmb_estatus.setValue("ACTIVO");
     }
 
@@ -45,27 +44,23 @@ public class FormController {
      */
     public void initData(Paciente paciente,
                          ObservableList<Paciente> lista,
-                         PacienteService svc) {
-        // 1. Guardamos las referencias en nuestras variables internas (this.) para usarlas luego.
-        this.listaPacientes   = lista; // La lista que se ve en la tabla principal
-        this.service          = svc;   // El servicio para validar y guardar
-        this.pacienteEditando = paciente; // El paciente que vamos a editar (si aplica)
+                         PacienteService validar) {
+         //variables globales para usar mas tarde
+        this.listaPacientes   = lista;
+        this.service          = validar;
+        this.pacienteEditando = paciente;
 
-        // 2. Lógica de "Modo": ¿Es un paciente nuevo o uno existente?
         if (paciente != null) {
-            //MODO EDICIÓN
-            // Cambiamos el título de la ventana para que el usuario sepa que está editando.
+
             lbl_titulo_form.setText("Editar Paciente");
 
-            // Llenamos los campos de texto con los datos actuales del paciente.
+            // Llenamos los campos con lo datos del paciente.
             txt_curp.setText(paciente.getCurp());
-
-            // Bloqueamos el campo CURP. En bases de datos, el ID (CURP) no suele cambiarse.
             txt_curp.setDisable(true);
 
             txt_nombre.setText(paciente.getNombre());
 
-            // Convertimos la edad (int) a texto (String) para que el TextField lo acepte.
+            // Convertimos la edad
             txt_edad.setText(String.valueOf(paciente.getEdad()));
 
             txt_telefono.setText(paciente.getTelefono());
@@ -73,21 +68,20 @@ public class FormController {
             cmb_estatus.setValue(paciente.getEstatus());
 
         } else {
-            // MODO ALTA (Nuevo Registro)
-            // Si el objeto paciente llegó nulo, solo cambiamos el título a "Nuevo".
-            // Los campos se quedan vacíos como están en el diseño original.
             lbl_titulo_form.setText("Nuevo Paciente");
         }
     }
 
 
-    //Guardar (alta o edición)
+
     @FXML
     public void onGuardar() {
 
         lbl_error_form.setText("");
 
         // 1. Leer campos y los normaliza
+        //trim() para quitar espacios accidentales al inicio o final
+        // .toUpperCase() para que la CURP siempre esté en mayúsculas
         String curp     = txt_curp.getText().trim().toUpperCase();
         String nombre   = txt_nombre.getText().trim();
         String edadTxt  = txt_edad.getText().trim();
@@ -126,7 +120,7 @@ public class FormController {
             // ALTA
             listaPacientes.add(temporal);
         } else {
-            // EDICIÓN necesita hacer refresh despues
+            // EDICIÓN
             pacienteEditando.setNombre(nombre);
             pacienteEditando.setEdad(edad);
             pacienteEditando.setTelefono(telefono);
@@ -148,25 +142,19 @@ public class FormController {
 // Este metodo se activa cuando el usuario hace clic en el boton "Cancelar"
     @FXML
     public void onCancelar() {
-        // Simplemente llama a la función auxiliar para cerrar la pantalla actual
         cerrarVentana();
     }
 
 //Helpers (Funciones de ayuda)
 
-    // Este metodo sirve para mostrarle mensajes de advertencia al usuario en la interfaz
     private void mostrarError(String mensaje) {
-        // Toma el texto que recibe por parámetro y lo pone en la etiqueta (Label) de error
         lbl_error_form.setText(mensaje);
     }
 
     // Este metodo contiene la lógica técnica para cerrar la ventana de forma segura
     private void cerrarVentana() {
-        // 1. Obtenemos la "Escena" (Scene) donde está el botón cancelar.
-        // 2. De esa escena, obtenemos la "Ventana" (Window) y la convertimos a un objeto tipo Stage.
         Stage stage = (Stage) btn_cancelar.getScene().getWindow();
 
-        // 3. Le decimos a esa ventana que se cierre definitivamente.
         stage.close();
     }
 }
